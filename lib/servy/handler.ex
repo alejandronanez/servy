@@ -17,7 +17,7 @@ defmodule Servy.Handler do
   end
 
   def route(conv) do
-    conv = %{method: "GET", path: "/wildthings", resp_body: "Bear, Lions, Tiger"}
+    %{conv | resp_body: "Bears, Lions, Tigers"}
   end
 
   def format_response(conv) do
