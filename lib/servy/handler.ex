@@ -1,16 +1,16 @@
 defmodule Servy.Handler do
   def handle(request) do
     request
-      |> parse
-      |> route
-      |> format_response
-  end 
+    |> parse
+    |> route
+    |> format_response
+  end
 
   def parse(request) do
     [method, path, _] =
       request
       |> String.split("\n")
-      |> List.first
+      |> List.first()
       |> String.split(" ")
 
     %{method: method, path: path, resp_body: ""}
@@ -21,6 +21,5 @@ defmodule Servy.Handler do
   end
 
   def format_response(conv) do
-    
   end
 end
