@@ -1,24 +1,3 @@
-defmodule Servy.Plugins do
-  @doc """
-  Logs 404 requests
-  """
-  def track(%{status: 404, path: path} = conv) do
-    IO.puts("Warning: #{path} is on the loose!")
-
-    conv
-  end
-
-  def track(conv), do: conv
-
-  def rewrite_path(%{path: "/wildlife"} = conv) do
-    %{conv | path: "/wildthings"}
-  end
-
-  def rewrite_path(conv), do: conv
-
-  def log(conv), do: IO.inspect(conv)
-end
-
 defmodule Servy.Handler do
   @moduledoc """
   Handles HTTP requests
@@ -27,6 +6,7 @@ defmodule Servy.Handler do
   @pages_path Path.expand("../../pages", __DIR__)
 
   import Servy.Plugins, only: [track: 1, rewrite_path: 1, log: 1]
+  import Servy.Parser, only: [parse: 1]
 
   @doc """
   Transform the request into a response
@@ -39,16 +19,6 @@ defmodule Servy.Handler do
     |> route
     |> track
     |> format_response
-  end
-
-  def parse(request) do
-    [method, path, _] =
-      request
-      |> String.split("\n")
-      |> List.first()
-      |> String.split(" ")
-
-    %{method: method, path: path, resp_body: "", status: nil}
   end
 
   def route(%{method: "GET", path: "/wildthings"} = conv) do
