@@ -1,23 +1,4 @@
-defmodule Servy.Handler do
-  @moduledoc """
-  Handles HTTP requests
-  """
-
-  @pages_path Path.expand("../../pages", __DIR__)
-
-  @doc """
-  Transform the request into a response
-  """
-  def handle(request) do
-    request
-    |> parse
-    |> rewrite_path
-    |> log
-    |> route
-    |> track
-    |> format_response
-  end
-
+defmodule Servy.Plugins do
   @doc """
   Logs 404 requests
   """
@@ -36,6 +17,29 @@ defmodule Servy.Handler do
   def rewrite_path(conv), do: conv
 
   def log(conv), do: IO.inspect(conv)
+end
+
+defmodule Servy.Handler do
+  @moduledoc """
+  Handles HTTP requests
+  """
+
+  @pages_path Path.expand("../../pages", __DIR__)
+
+  import Servy.Plugins, only: [track: 1, rewrite_path: 1, log: 1]
+
+  @doc """
+  Transform the request into a response
+  """
+  def handle(request) do
+    request
+    |> parse
+    |> rewrite_path
+    |> log
+    |> route
+    |> track
+    |> format_response
+  end
 
   def parse(request) do
     [method, path, _] =
