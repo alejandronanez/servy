@@ -3,18 +3,24 @@ defmodule Servy.BearController do
   alias Servy.Wildthings
 
   def index(%Conv{} = conv) do
-    bears = Wildthings.list_bears()
+    items =
+      Wildthings.list_bears()
+      |> Enum.filter(fn(bear) -> bear.type == "Grizzly" end)
+      |> Enum.sort(fn(bear1, bear2) -> bear1.name <= bear2.name end)
+      |> Enum.map(fn(bear) -> "<li>#{bear.name} - #{bear.type}</li>" end)
+      |> Enum.join
 
-    # TODO: Transform into an HTML list
 
-    %{conv | status: 200, resp_body: bears}
+    %{conv | status: 200, resp_body: "<ul>#{items}</ul>"}
   end
 
   def show(%Conv{} = conv, %{"id" => id}) do
-    %{conv | status: 200, resp_body: "Bear #{id}"}
+    bear = Wildthings.get_bear(id)
+
+    %{conv | status: 200, resp_body: "<h1>Bear #{bear.id}: #{bear.name}</h1>"}
   end
 
-  def create(%Conv{} = conv, %{"name" => name, "type" => type} = params) do 
+  def create(%Conv{} = conv, %{"name" => name, "type" => type}) do 
     %{
       conv
       | status: 201,
