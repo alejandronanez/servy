@@ -16,7 +16,7 @@ defmodule Servy.Conv do
       201 => "Created",
       401 => "Unauthorized",
       403 => "Forbidden",
-      404 => "Not found",
+      404 => "Not Found",
       500 => "Internal Server Error"
     }[code]
   end
